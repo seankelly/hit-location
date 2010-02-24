@@ -11,3 +11,9 @@ div#bip-select {
 canvas#park-map {
     padding:.5em;
 }
+
+p#strerror {
+    background-color:#ff4d4d;
+    padding:4px;
+    width:500px;
+}

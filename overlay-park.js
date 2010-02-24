@@ -66,22 +66,6 @@ ParkBIP.prototype.redraw = function() {
 var bip = new ParkBIP();
 
 function initialize() {
-    var wrapper = $("#canvas-wrapper");
-    if (wrapper == undefined)
-        return;
-    wrapper.empty();
-    wrapper.append('<canvas id="park-map"></canvas>');
-    var canvas = document.getElementById('park-map');
-    if (!canvas.getContext) {
-        wrapper.empty();
-        wrapper.append('<p>Canvas support required. Please use a browser that supports the canvas element. Known browsers to support it include Chrome, Firefox, Opera, and Safari.</p>');
-    }
-    else {
-        wrapper.prepend('<p><a href="javascript:toggle_canvas()">Expand park map</a></p>');
-        canvas.height = 250;
-        canvas.width = 250;
-    }
-
     $("input").each(function(i, E) {
         set_bip(E);
     });

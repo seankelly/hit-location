@@ -110,7 +110,9 @@ MLB Gameday BIP Location
         </p>
     </div>
     <div id="canvas-wrapper">
-        <p style="width:500px">Please enable JavaScript for this to work. Also, a browser that supports the canvas element is required. Known browsers to support it include Chrome, Firefox, Opera, and Safari.</p>
+        <p id="strerror">Please enable JavaScript for this to work. Also, a browser that supports the canvas element is required. Known browsers to support it include Chrome, Firefox, Opera, and Safari.</p>
+        <p><a href="javascript:toggle_canvas()">Expand park map</a></p>
+        <canvas height="250" width="250" id="park-map"></canvas>
     </div>
     <div id="bip-select">
         <input type="checkbox" id="bip_fo" onchange="update_bip(this)"/><label for="bip_fo">Fly Outs</label><br/>
