@@ -13,7 +13,8 @@ canvas#park-map {
 }
 
 p#strerror {
-    background-color:#ff4d4d;
+    background-color:#a92121;
+    color:white;
     padding:4px;
     width:500px;
 }
