@@ -1,0 +1,13 @@
+div#park-select, div#canvas-wrapper {
+    float:left;
+    padding:.5em;
+}
+
+div#bip-select {
+    float:right;
+    padding:.5em;
+}
+
+canvas#park-map {
+    padding:.5em;
+}
