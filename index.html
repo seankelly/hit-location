@@ -7,6 +7,7 @@ MLB Gameday BIP Location
   <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
   <link rel="stylesheet" type="text/css" media="screen" title="main" href="/style/main.css" />
   <link rel="stylesheet" type="text/css" media="screen" title="main" href="hit-location.css" />
+  <script type="text/javascript" src="parkbip.js"></script>
   <script type="text/javascript" src="overlay-park.js"></script>
   <script type="text/javascript" src="/js/jquery-1.4.1.min.js"></script>
  </head>
@@ -28,84 +29,26 @@ MLB Gameday BIP Location
     <div id="park-select">
         <p>Show hits from:</p>
         <p>
-        <select id="park-from" onchange="update_parks(this, 'from')">
+        <select id="park-from" onchange="update_park({ 'from': this })">
             <option selected="selected" disabled="disabled">---</option>
-            <option value="1">Angel Stadium</option>
-            <option value="2395">AT&amp;T Park</option>
-            <option value="2889">Busch Stadium</option>
-            <option value="15">Chase Field</option>
-            <option value="3289">Citi Field</option>
-            <option value="2681">Citizens Bank Park</option>
-            <option value="2394">Comerica Park</option>
-            <option value="19">Coors Field</option>
-            <option value="22">Dodger Stadium</option>
-            <option value="20">Dolphin Stadium</option>
-            <option value="3">Fenway Park</option>
-            <option value="2602">Great American Ball Park</option>
-            <option value="7">Kauffman Stadium</option>
-            <option value="8">Metrodome</option>
-            <option value="32">Miller Park</option>
-            <option value="2392">Minute Maid Park</option>
-            <option value="3309">Nationals Park</option>
-            <option value="10">Oakland-Alameda County Coliseum</option>
-            <option value="2">Oriole Park</option>
-            <option value="2680">PETCO Park</option>
-            <option value="31">PNC Park</option>
-            <option value="5">Progressive Field</option>
-            <option value="13">Rangers Ballpark</option>
-            <option value="14">Rogers Centre</option>
-            <option value="680">Safeco Field</option>
-            <option value="12">Tropicana Field</option>
-            <option value="16">Turner Field</option>
-            <option value="4">U.S. Cellular Field</option>
-            <option value="17">Wrigley Field</option>
-            <option value="3313">Yankee Stadium III</option>
         </select>
         </p>
         <p>Display on:</p>
         <p>
-        <select id="park-on" onchange="update_parks(this, 'on')">
+        <select id="park-on" onchange="update_park({ 'on': this })">
             <option selected="selected" disabled="disabled">---</option>
-            <option value="1">Angel Stadium</option>
-            <option value="2395">AT&amp;T Park</option>
-            <option value="2889">Busch Stadium</option>
-            <option value="15">Chase Field</option>
-            <option value="3289">Citi Field</option>
-            <option value="2681">Citizens Bank Park</option>
-            <option value="2394">Comerica Park</option>
-            <option value="19">Coors Field</option>
-            <option value="22">Dodger Stadium</option>
-            <option value="20">Dolphin Stadium</option>
-            <option value="3">Fenway Park</option>
-            <option value="2602">Great American Ball Park</option>
-            <option value="7">Kauffman Stadium</option>
-            <option value="8">Metrodome</option>
-            <option value="32">Miller Park</option>
-            <option value="2392">Minute Maid Park</option>
-            <option value="3309">Nationals Park</option>
-            <option value="10">Oakland-Alameda County Coliseum</option>
-            <option value="2">Oriole Park</option>
-            <option value="2680">PETCO Park</option>
-            <option value="31">PNC Park</option>
-            <option value="5">Progressive Field</option>
-            <option value="13">Rangers Ballpark</option>
-            <option value="14">Rogers Centre</option>
-            <option value="680">Safeco Field</option>
-            <option value="12">Tropicana Field</option>
-            <option value="16">Turner Field</option>
-            <option value="4">U.S. Cellular Field</option>
-            <option value="17">Wrigley Field</option>
-            <option value="3313">Yankee Stadium III</option>
         </select>
         </p>
         <hr />
         <p>Filter by:</p>
         <p>Pitcher:
-        <select id="pitcher-filter">
+        <select id="pitcher-filter" onchange="update_filter({ pitcher: this })">
+            <option selected="selected" value="all">All</option>
         </select>
         </p>
         <p>Batter:
-        <select id="batter-filter">
+        <select id="batter-filter" onchange="update_filter({ batter: this })">
+            <option selected="selected" value="all">All</option>
         </select>
         </p>
     </div>
@@ -115,15 +58,20 @@ MLB Gameday BIP Location
         <canvas height="250" width="250" id="park-map"></canvas>
     </div>
     <div id="bip-select">
-        <input type="checkbox" id="bip_fo" onchange="update_bip(this)"/><label for="bip_fo">Fly Outs</label><br/>
-        <input type="checkbox" id="bip_lo" onchange="update_bip(this)"/><label for="bip_lo">Line Outs</label><br/>
-        <input type="checkbox" id="bip_go" onchange="update_bip(this)"/><label for="bip_go">Ground Outs</label><br/>
-        <input type="checkbox" id="bip_1b" onchange="update_bip(this)"/><label for="bip_1b">Singles</label><br/>
-        <input type="checkbox" id="bip_2b" onchange="update_bip(this)"/><label for="bip_2b">Doubles</label><br/>
-        <input type="checkbox" id="bip_3b" onchange="update_bip(this)"/><label for="bip_3b">Triples</label><br/>
-        <input type="checkbox" id="bip_hr" onchange="update_bip(this)"/><label for="bip_hr">Home runs</label><br/>
+        <input type="checkbox" checked="checked" id="bip_fo" onchange="update_bip(this)"/><label for="bip_fo">Fly Outs</label><br/>
+        <input type="checkbox" checked="checked" id="bip_lo" onchange="update_bip(this)"/><label for="bip_lo">Line Outs</label><br/>
+        <input type="checkbox" checked="checked" id="bip_go" onchange="update_bip(this)"/><label for="bip_go">Ground Outs</label><br/>
+        <input type="checkbox" checked="checked" id="bip_1b" onchange="update_bip(this)"/><label for="bip_1b">Singles</label><br/>
+        <input type="checkbox" checked="checked" id="bip_2b" onchange="update_bip(this)"/><label for="bip_2b">Doubles</label><br/>
+        <input type="checkbox" checked="checked" id="bip_3b" onchange="update_bip(this)"/><label for="bip_3b">Triples</label><br/>
+        <input type="checkbox" checked="checked" id="bip_hr" onchange="update_bip(this)"/><label for="bip_hr">Home runs</label><br/>
     </div>
     <div style="clear:both"></div>
+    <div>
+        <hr />
+        <h3>Help</h3>
+        <h3>Glossary</h3>
+    </div>
 </div>
 <div id="footer"></div>
 </div>
