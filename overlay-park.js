@@ -136,6 +136,15 @@ function fetch_bip(id, update) {
 }
 
 function parse_bip(id, xml) {
+    // Here I thought there would be one or two events that need mapping.
+    // Turns out there is going to be a ton. WTF MLBAM?
+    var event_map = {
+        'force out': 'ground out', 'forceout': 'ground out',
+        'grounded into dp': 'ground out', 'groundout': 'ground out',
+        'fielders choice out': 'ground out',
+        'sac fly': 'fly out', 'flyout': 'fly out',
+        'lineout': 'line out'
+    };
     var park = $(xml).find("park");
     var json = {
         batters: { },
@@ -161,6 +170,8 @@ function parse_bip(id, xml) {
             batter: el.attr('batter'),
             pitcher: el.attr('pitcher'),
         };
+        if (event_map[bip.event])
+            bip.event = event_map[bip.event];
 
         if (json.batters[bip.batter])
             json.batters[bip.batter]++;
