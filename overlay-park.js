@@ -189,7 +189,9 @@ function populate_parks_list(parks) {
         sorted_parks[parks[id].name] = id;
         list.push(parks[id].name);
     }
-    list.sort(function(a, b) { return a.toLowerCase() > b.toLowerCase(); });
+    list.sort(function(a, b) {
+        return a.toLowerCase() < b.toLowerCase() ? -1 : 1;
+    });
 
     var park_insert = '<option selected="selected" disabled="disabled">Select a park</option>';
     for (var i = 0; i < list.length; i++) {
