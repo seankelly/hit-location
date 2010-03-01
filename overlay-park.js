@@ -65,7 +65,8 @@ function update_filter(arg) {
 function update_bip(arg) {
     var update = {};
     var id_map = {
-        'bip_fo': 'fly out', 'bip_lo': 'line out', 'bip_go': 'ground out',
+        'bip_po': 'pop out', 'bip_fo': 'fly out',
+        'bip_lo': 'line out', 'bip_go': 'ground out',
         'bip_1b': 'single', 'bip_2b': 'double',
         'bip_3b': 'triple', 'bip_hr': 'home run'
     };

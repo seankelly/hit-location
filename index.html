@@ -58,6 +58,7 @@ MLB Gameday BIP Location
         <canvas height="250" width="250" id="park-map"></canvas>
     </div>
     <div id="bip-select">
+        <input type="checkbox" checked="checked" id="bip_po" onchange="update_bip(this)"/><label for="bip_po">Pop Outs</label><br/>
         <input type="checkbox" checked="checked" id="bip_fo" onchange="update_bip(this)"/><label for="bip_fo">Fly Outs</label><br/>
         <input type="checkbox" checked="checked" id="bip_lo" onchange="update_bip(this)"/><label for="bip_lo">Line Outs</label><br/>
         <input type="checkbox" checked="checked" id="bip_go" onchange="update_bip(this)"/><label for="bip_go">Ground Outs</label><br/>

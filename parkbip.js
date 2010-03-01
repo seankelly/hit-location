@@ -11,7 +11,7 @@ function ParkBIP(canvas) {
         from: undefined
     };
     this.selected_bip = {
-        'fly out': true, 'line out': true, 'ground out': true,
+        'pop out': true, 'fly out': true, 'line out': true, 'ground out': true,
         'single': true, 'double': true, 'triple': true, 'home run': true
     };
 }
