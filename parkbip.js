@@ -150,11 +150,13 @@ ParkBIP.prototype.draw_bip = function(bip) {
     var scale = parseFloat(park_on.scale);
     var hp_x = parseFloat(park_on.hp_x);
     var hp_y = parseFloat(park_on.hp_y);
+    var radius = 2;
 
     if (this.canvas.height == 250) {
         scale *= 2;
         hp_x /= 2;
         hp_y /= 2;
+        radius = 1;
     }
 
     var bip_list = this._park[this._park.from].bip;
@@ -164,7 +166,7 @@ ParkBIP.prototype.draw_bip = function(bip) {
             continue;
 
         ctx.beginPath();
-        ctx.arc(bip.x/scale + hp_x, hp_y - bip.y/scale, 2, 0, 2*Math.PI, false);
+        ctx.arc(bip.x/scale + hp_x, hp_y - bip.y/scale, radius, 1, 2*Math.PI, false);
         ctx.fill();
     }
 }
