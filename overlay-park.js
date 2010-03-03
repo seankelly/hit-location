@@ -105,6 +105,7 @@ function update_park(arg) {
 }
 
 function fetch_parks() {
+    bip.fetching(true);
     $.get("bip/parks.xml", function(xml) {
         var parks = { };
         $(xml).find("park").each(function() {
@@ -122,6 +123,7 @@ function fetch_parks() {
 
         populate_parks_list(parks);
         bip.add_parks(parks);
+        bip.fetching(false);
     });
 }
 
