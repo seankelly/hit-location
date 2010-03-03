@@ -25,6 +25,7 @@ ParkBIP.prototype.update = function(arg) {
         return;
     if (arg.park_from) {
         this._park.from = arg.park_from;
+        this.filter.pitcher = this.filter.batter = undefined;
         updated = true;
     }
     if (arg.park_on) {
