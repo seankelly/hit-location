@@ -121,50 +121,69 @@ ParkBIP.prototype.get_park_factors = function(id) {
 
 ParkBIP.prototype.draw = function() {
     if (!this._fetching) {
-        this.draw_park();
-        this.draw_bip();
-    }
-}
+        var draw_bip = function(that) {
+            if (that._park.on == undefined || that._park.on == "default" || that._park.from == undefined)
+                return;
 
-ParkBIP.prototype.draw_park = function() {
-    if (this._park.on == undefined || this._park[this._park.on] == undefined)
-        return;
-    var ctx = this.canvas.getContext('2d');
-    var width = this.canvas.width;
-    var height = this.canvas.height;
-    var img = this._park[this._park.on].image;
-    ctx.drawImage(img, 0, 0, width, height);
-}
+            var park_on = that._park[that._park.on];
+            var pitcher = that.filter.pitcher;
+            var batter = that.filter.batter;
+            var ctx = that.ctx;
 
-ParkBIP.prototype.draw_bip = function(bip) {
-    if (this._park.on == undefined || this._park.on == "default" || this._park.from == undefined)
-        return;
+            var scale = parseFloat(park_on.scale);
+            var hp_x = parseFloat(park_on.hp_x);
+            var hp_y = parseFloat(park_on.hp_y);
+            var radius = 2;
 
-    var park_on = this._park[this._park.on];
-    var pitcher = this.filter.pitcher;
-    var batter = this.filter.batter;
-    var ctx = this.canvas.getContext('2d');
+            if (that.canvas.height == 250) {
+                scale *= 2;
+                hp_x /= 2;
+                hp_y /= 2;
+                radius = 1;
+            }
 
-    var scale = parseFloat(park_on.scale);
-    var hp_x = parseFloat(park_on.hp_x);
-    var hp_y = parseFloat(park_on.hp_y);
-    var radius = 2;
+            var bip_list = that._park[that._park.from].bip;
+            for (var i = 0; i < bip_list.length; i++) {
+                var bip = bip_list[i];
+                if (!that.selected_bip[bip.event] || (pitcher && pitcher != bip.pitcher) || (batter && batter != bip.batter))
+                    continue;
 
-    if (this.canvas.height == 250) {
-        scale *= 2;
-        hp_x /= 2;
-        hp_y /= 2;
-        radius = 1;
-    }
+                ctx.beginPath();
+                ctx.arc(bip.x/scale + hp_x, hp_y - bip.y/scale, radius, 1, 2*Math.PI, false);
+                ctx.fill();
+            }
+        }
 
-    var bip_list = this._park[this._park.from].bip;
-    for (var i = 0; i < bip_list.length; i++) {
-        var bip = bip_list[i];
-        if (!this.selected_bip[bip.event] || (pitcher && pitcher != bip.pitcher) || (batter && batter != bip.batter))
-            continue;
+        var draw_park = function(that) {
+            var id = that._park.on;
+            if (id == undefined || that._park[id] == undefined)
+                return;
+            var ctx = that.ctx;
+            var width = that.ctx.canvas.width;
+            var height = that.ctx.canvas.height;
+            var park = that._park[id];
+            if (park.image) {
+                ctx.drawImage(park.image, 0, 0, width, height);
+                draw_bip(that);
+            }
+            else {
+                var img = new Image();
+                img.src = "img/" + id + ".png";
+                park.image = img;
+                var f;
+                f = function() {
+                    if (img.complete) {
+                        ctx.drawImage(img, 0, 0, width, height);
+                        draw_bip(that);
+                    }
+                    else {
+                        setTimeout(f, 10);
+                    }
+                }
+                setTimeout(f, 10);
+            }
+        }
 
-        ctx.beginPath();
-        ctx.arc(bip.x/scale + hp_x, hp_y - bip.y/scale, radius, 1, 2*Math.PI, false);
-        ctx.fill();
+        draw_park(this);
     }
 }
