@@ -69,9 +69,6 @@ ParkBIP.prototype.add_parks = function(arg) {
     arg['default'] = {};
     for (var id in arg) {
         this._park[id] = arg[id];
-        var img = new Image();
-        img.src = 'img/' + id + '.png';
-        this._park[id].image = img;
     }
 }
 
