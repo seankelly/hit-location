@@ -1,7 +1,8 @@
 function ParkBIP(canvas) {
     this.canvas = canvas;
-    this._fetching = false,
-    this.fetch_queue = [ ],
+    this.ctx = canvas.getContext('2d');
+    this._fetching = false;
+    this.fetch_queue = [ ];
     this.filter = {
         pitcher: undefined,
         batter: undefined
