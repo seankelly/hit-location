@@ -143,12 +143,23 @@ ParkBIP.prototype.draw = function() {
                 radius = 1;
             }
 
+            var color = {
+                'pop out': '#eb3b22',
+                'line out': '#ec5925',
+                'fly out': '#ef8528',
+                'ground out': '#f3b02f',
+                'single': '#54bafb',
+                'double': '#3f8ffb',
+                'triple': '#2962fa',
+                'home run': '#173cfa',
+            };
             var bip_list = that._park[that._park.from].bip;
             for (var i = 0; i < bip_list.length; i++) {
                 var bip = bip_list[i];
                 if (!that.selected_bip[bip.event] || (pitcher && pitcher != bip.pitcher) || (batter && batter != bip.batter))
                     continue;
 
+                ctx.fillStyle = color[bip.event];
                 ctx.beginPath();
                 ctx.arc(bip.x/scale + hp_x, hp_y - bip.y/scale, radius, 1, 2*Math.PI, false);
                 ctx.fill();
