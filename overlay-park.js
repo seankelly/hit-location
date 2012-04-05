@@ -7,7 +7,7 @@ function initialize() {
 
     msgbox();
     $("#strerror").ajaxError(function() {
-        msgbox("Fetch failed");
+        msgbox("Park fetch failed");
     });
 
     var canvas = document.getElementById('park-map');
@@ -33,7 +33,7 @@ function msgbox(msg) {
 
 function toggle_canvas() {
     var canvas = bip.canvas;
-    var toggle = $("#canvas-wrapper a");
+    var toggle = $("#canvas-wrapper a.expand");
     if (canvas == undefined || toggle == undefined)
         return;
     if (canvas.height == 250) {
@@ -47,6 +47,16 @@ function toggle_canvas() {
         toggle.text("Expand park map");
     }
     bip.draw();
+}
+
+function export_canvas() {
+    var png = bip.canvas.toDataURL('image/png');
+    // Add 5% to the window size to attempt to compensate for the window
+    // borders. Just hoping to prevent scrolling or scaling of image.
+    // The 500x500 had no scaling for me, but 250x250 did. Close enough.
+    var width = parseInt(bip.canvas.width*1.05);
+    var height = parseInt(bip.canvas.height*1.05);
+    window.open(png, 'png_canvas', 'width=' + width + ',height=' + height);
 }
 
 function update_filter(arg) {
@@ -84,15 +94,16 @@ function update_bip(arg) {
         $("input[id^='bip_']").each(f);
     }
 
-    bip.update({ bip: update });
+    bip.update({ hit: update });
 }
 
 function update_park(arg) {
     var update = {};
     if (arg.from) {
         var id = arg.from.value;
+        var year = get_year();
         update.park_from = id;
-        if (bip.bip_exists(id))
+        if (bip.bip_exists(id, year))
             populate_filter_list(id);
         else
             fetch_bip(id);
@@ -104,40 +115,46 @@ function update_park(arg) {
     bip.update(update);
 }
 
+function update_year() {
+    var update = {};
+    update.year = get_year();
+    populate_parks_from();
+
+    bip.update(update);
+}
+
+function get_year() { return $("#years").val(); }
+
 function fetch_parks() {
     bip.fetching(true);
-    $.get("bip/parks.xml", function(xml) {
+    $.getJSON("bip/parks.json", function(json) {
         var parks = { };
-        $(xml).find("park").each(function() {
-            var el = $(this);
-            var id = el.attr("id");
-            var park = {
-                id: id,
-                hp_x: el.attr("hp_x"),
-                hp_y: el.attr("hp_y"),
-                name: el.attr("name"),
-                scale: el.attr("scale")
-            };
-            parks[id] = park;
-        });
+        for (var i = 0; i < json.length; i++) {
+            json[i].hp_x = parseFloat(json[i].hp_x);
+            json[i].hp_y = parseFloat(json[i].hp_y);
+            json[i].scale = parseFloat(json[i].scale);
+            parks[json[i].id] = json[i];
+        }
 
-        populate_parks_list(parks);
         bip.add_parks(parks);
+        populate_years_list(parks);
         bip.fetching(false);
     });
 }
 
 function fetch_bip(id, update) {
-    var url = "bip/park-" + id + ".xml";
+    var year = get_year();
+    var url = "bip/park-" + id + "-" + year + ".json";
     bip.fetching(true);
-    $.get(url, function(xml) {
-        parse_bip(id, xml);
+    $.getJSON(url, function(json) {
+        msgbox();
+        parse_bip(id, year, json);
         populate_filter_list(id);
         bip.fetching(false);
     });
 }
 
-function parse_bip(id, xml) {
+function parse_bip(id, year, bip_json) {
     // Here I thought there would be one or two events that need mapping.
     // Turns out there is going to be a ton. WTF MLBAM?
     var event_map = {
@@ -147,13 +164,13 @@ function parse_bip(id, xml) {
         'sac fly': 'fly out', 'flyout': 'fly out',
         'lineout': 'line out'
     };
-    var park = $(xml).find("park");
-    var json = {
+    var park = {
         batters: { },
         pitchers: { }
     };
 
-    json.bip = new Array();
+    park.hit = [ ];
+
     // Scale things for the 250x250 image.
     var image = bip.get_park_factors(id);
     if (!image) {
@@ -163,66 +180,124 @@ function parse_bip(id, xml) {
     image.scale *= 2;
     image.hp_x /= 2;
     image.hp_y /= 2;
-    park.children().each(function() {
-        var el = $(this);
-        var bip = {
-            x: (el.attr('x') - image.hp_x) * image.scale,
-            y: (image.hp_y - el.attr('y')) * image.scale,
-            'event': el.attr('event').toLowerCase(),
-            batter: el.attr('batter'),
-            pitcher: el.attr('pitcher'),
-        };
-        if (event_map[bip.event])
-            bip.event = event_map[bip.event];
 
-        if (json.batters[bip.batter])
-            json.batters[bip.batter]++;
+    for (var i = 0; i < bip_json.length; i++) {
+        var hit = bip_json[i];
+        hit.x = (hit.x - image.hp_x) * image.scale;
+        hit.y = (image.hp_y - hit.y) * image.scale;
+        hit.event = hit.event.toLowerCase();
+
+        if (event_map[hit.event])
+            hit.event = event_map[hit.event];
+
+        if (park.batters[hit.batter])
+            park.batters[hit.batter]++;
         else
-            json.batters[bip.batter] = 1;
+            park.batters[hit.batter] = 1;
 
-        if (json.pitchers[bip.pitcher])
-            json.pitchers[bip.pitcher]++;
+        if (park.pitchers[hit.pitcher])
+            park.pitchers[hit.pitcher]++;
         else
-            json.pitchers[bip.pitcher] = 1;
+            park.pitchers[hit.pitcher] = 1;
 
-        json.bip.push(bip);
-    });
+        park.hit.push(hit);
+    }
 
-    bip.add_bip(id, json);
+    bip.add_bip(id, year, park);
 }
 
-function populate_parks_list(parks) {
-    var from = $("#park-from");
-    var on = $("#park-on");
+function populate_years_list(parks) {
+    var years = {};
+    var year_list = [];
 
-    // parks is a mapping of id => stuff
-    // I need a mapping of park => id, but sorted
-    var sorted_parks = { };
-    var list = new Array();
     for (var id in parks) {
-        sorted_parks[parks[id].name] = id;
+        for (var year in parks[id].years) {
+            if (!(year in years)) {
+                years[year] = true;
+                year_list.push(year);
+            }
+        }
+    }
+
+    year_list.sort();
+    year_list.reverse();
+    var options = '';
+    for (var i = 0; i < year_list.length; i++) {
+        var selected = (i == 0 ? 'selected="selected" ' : '');
+        options += '<option ' + selected + 'value="' + year_list[i] + '">' + year_list[i] + '</option>';
+    }
+
+    var year_select = $("#years");
+    year_select.empty();
+    year_select.append(options);
+    update_year();
+
+    populate_parks_list();
+}
+
+// parks is a mapping of id => stuff
+// I need a mapping of park => id, but sorted
+function _sorted_parks() {
+    var sorted = { };
+    var list = [ ];
+    var parks = bip._park;
+    for (var id in parks) {
+        if (isNaN(parseInt(id))) continue;
+        sorted[parks[id].name] = id;
         list.push(parks[id].name);
     }
     list.sort(function(a, b) {
         return a.toLowerCase() < b.toLowerCase() ? -1 : 1;
     });
 
-    var park_insert = '<option selected="selected" disabled="disabled">Select a park</option>';
+    list.push(sorted);
+    return list;
+}
+
+function populate_parks_from() {
+    var from = $("#park-from");
+    var year = get_year();
+    var parks = bip._park;
+
+    var list = _sorted_parks();
+    var sorted_list = list.pop();
+    var insert =  '<option selected="selected" disabled="disabled">Select a park</option>';
     for (var i = 0; i < list.length; i++) {
-        park_insert += '<option value="' + sorted_parks[list[i]] + '">' + list[i] + '</option>';
+        var park = parks[sorted_list[list[i]]];
+        if (park.bip > 0 && park.years[year])
+            insert += '<option value="' + sorted_list[list[i]] + '">' + list[i] + '</option>';
     }
 
     from.empty();
-    from.append(park_insert);
+    from.append(insert);
+}
+
+function populate_parks_on() {
+    var on = $("#park-on");
+
+    var list = _sorted_parks();
+    var sorted_list = list.pop();
+    var insert =  '<option selected="selected" disabled="disabled">Select a park</option>';
+    for (var i = 0; i < list.length; i++) {
+        insert += '<option value="' + sorted_list[list[i]] + '">' + list[i] + '</option>';
+    }
+
     on.empty();
-    on.append(park_insert);
+    on.append(insert);
+}
+
+function populate_parks_list() {
+    populate_parks_from();
+    populate_parks_on();
 }
 
 function populate_filter_list(id) {
     which = function(w, element) {
+        var suffix_map = { 'pitchers': 'P', 'batters': 'H' };
+        var suffix = suffix_map[w];
         var list = bip.get_players(id, w);
         element.empty();
-        var insert_text = '<option value="all">All</option>';
+        var insert_text = '<option value="all">All</option><option value="L">LH' + suffix + '</option><option value="R">RH' + suffix + '</option>';
         for (var i = 0; i < list.length; i++) {
             insert_text += '<option value="' + list[i] + '">' + list[i] + '</option>';
         }

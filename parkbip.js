@@ -15,6 +15,7 @@ function ParkBIP(canvas) {
         'pop out': true, 'fly out': true, 'line out': true, 'ground out': true,
         'single': true, 'double': true, 'triple': true, 'home run': true
     };
+    this.year = 2009;
 }
 
 /**********/
@@ -23,6 +24,11 @@ ParkBIP.prototype.update = function(arg) {
     var updated = false;
     if (!arg)
         return;
+    if ("year" in arg) {
+        this.year = arg.year;
+        this._park.from = undefined;
+        updated = true;
+    }
     if (arg.park_from) {
         this._park.from = arg.park_from;
         this.filter.pitcher = this.filter.batter = undefined;
@@ -40,10 +46,10 @@ ParkBIP.prototype.update = function(arg) {
         this.filter.batter = arg.batter;
         updated = true;
     }
-    if (arg.bip) {
-        for (var type in arg.bip) {
+    if (arg.hit) {
+        for (var type in arg.hit) {
             if (type in this.selected_bip) {
-                this.selected_bip[type] = arg.bip[type];
+                this.selected_bip[type] = arg.hit[type];
             }
         }
         updated = true;
@@ -73,29 +79,35 @@ ParkBIP.prototype.add_parks = function(arg) {
     }
 }
 
-ParkBIP.prototype.add_bip = function(id, bip) {
+ParkBIP.prototype.add_bip = function(id, year, bip) {
     if (this._park[id] instanceof Object) {
-        for (var prop in bip) {
-            this._park[id][prop] = bip[prop];
+        var park = this._park[id];
+        if (!park.year) {
+            park.year = { };
         }
-    }
-    else {
-        this._park[id] = bip;
+        if (!park.year[year]) {
+            park.year[year] = { };
+        }
+        for (var prop in bip) {
+            park.year[year][prop] = bip[prop];
+        }
     }
 }
 
-ParkBIP.prototype.bip_exists = function(id) {
-    if (this._park[id] && this._park[id].bip instanceof Object)
+ParkBIP.prototype.bip_exists = function(id, year) {
+    if (this._park[id] && this._park[id].year instanceof Object && this._park[id].year[year] instanceof Array)
         return true;
     return false;
 }
 
 ParkBIP.prototype.get_players = function(id, type, player) {
     var list = new Array();
-    if (!this._park[id] || !this._park[id][type])
+    var park = this._park[id];
+    var year = this.year;
+    if (!park || !park.year || !park.year[year][type])
         return list;
 
-    for (var name in this._park[id][type]) {
+    for (var name in park.year[year][type]) {
         if (player) {
             if (player == name)
                 list.push(name);
@@ -130,6 +142,7 @@ ParkBIP.prototype.draw = function() {
             var pitcher = that.filter.pitcher;
             var batter = that.filter.batter;
             var ctx = that.ctx;
+            var year = that.year;
 
             var scale = parseFloat(park_on.scale);
             var hp_x = parseFloat(park_on.hp_x);
@@ -148,15 +161,15 @@ ParkBIP.prototype.draw = function() {
                 'line out': '#ec5925',
                 'fly out': '#ef8528',
                 'ground out': '#f3b02f',
-                'single': '#54bafb',
-                'double': '#3f8ffb',
-                'triple': '#2962fa',
-                'home run': '#173cfa',
+                'single': '#68e4fd',
+                'double': '#4aa4fb',
+                'triple': '#215cfa',
+                'home run': '#032bfa',
             };
-            var bip_list = that._park[that._park.from].bip;
+            var bip_list = that._park[that._park.from].year[year].hit;
             for (var i = 0; i < bip_list.length; i++) {
                 var bip = bip_list[i];
-                if (!that.selected_bip[bip.event] || (pitcher && pitcher != bip.pitcher) || (batter && batter != bip.batter))
+                if (!that.selected_bip[bip.event] || (pitcher && (pitcher != bip.pitcher && pitcher != bip['throw'])) || (batter && (batter != bip.batter && batter != bip.stand)))
                     continue;
 
                 ctx.fillStyle = color[bip.event];
