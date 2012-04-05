@@ -1,3 +1,9 @@
+var K = (function(my, $) {
+    'use strict';
+}(K, jQuery));
+
+/*****************************/
+
 function ParkBIP(canvas) {
     this.canvas = canvas;
     this.ctx = canvas.getContext('2d');
