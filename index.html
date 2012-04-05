@@ -9,7 +9,7 @@ MLB Gameday BIP Location
   <link rel="stylesheet" type="text/css" media="screen" title="main" href="hit-location.css" />
   <script type="text/javascript" src="parkbip.js"></script>
   <script type="text/javascript" src="overlay-park.js"></script>
-  <script type="text/javascript" src="/js/jquery-1.4.1.min.js"></script>
+  <script type="text/javascript" src="/js/jquery-1.4.2.min.js"></script>
  </head>
 <body onload="initialize()">
 <div id="page">
@@ -27,51 +27,69 @@ MLB Gameday BIP Location
 </div>
 <div id="content">
     <div id="park-select">
-        <p>Show hits from:</p>
-        <p>
-        <select id="park-from" onchange="update_park({ 'from': this })">
-            <option selected="selected" disabled="disabled">---</option>
-        </select>
-        </p>
-        <p>Display on:</p>
-        <p>
-        <select id="park-on" onchange="update_park({ 'on': this })">
-            <option selected="selected" disabled="disabled">---</option>
-        </select>
-        </p>
+        <div>
+            <p>Year: <select id="years" onchange="update_year(this)"><option disabled="disabled" value="---">---</option></select></p>
+        </div>
+        <div>
+            <p>Show hits from:</p>
+            <p>
+            <select id="park-from" onchange="update_park({ 'from': this })">
+                <option selected="selected" disabled="disabled">---</option>
+            </select>
+            </p>
+            <p>Display on:</p>
+            <p>
+            <select id="park-on" onchange="update_park({ 'on': this })">
+                <option selected="selected" disabled="disabled">---</option>
+            </select>
+            </p>
+        </div>
         <hr />
-        <p>Filter by:</p>
-        <p>Pitcher:
-        <select id="pitcher-filter" onchange="update_filter({ pitcher: this })">
-            <option selected="selected" value="all">All</option>
-        </select>
-        </p>
-        <p>Batter:
-        <select id="batter-filter" onchange="update_filter({ batter: this })">
-            <option selected="selected" value="all">All</option>
-        </select>
-        </p>
+        <div>
+            <p>Filter by:</p>
+            <p>Pitcher:
+            <select id="pitcher-filter" onchange="update_filter({ pitcher: this })">
+                <option selected="selected" value="all">All</option>
+            </select>
+            </p>
+            <p>Batter:
+            <select id="batter-filter" onchange="update_filter({ batter: this })">
+                <option selected="selected" value="all">All</option>
+            </select>
+            </p>
+        </div>
     </div>
     <div id="canvas-wrapper">
         <p id="strerror">Please enable JavaScript for this to work. Also, a browser that supports the canvas element is required. Known browsers to support it include Chrome, Firefox, Opera, and Safari.</p>
-        <p><a href="javascript:toggle_canvas()">Expand park map</a></p>
+        <p><a class="expand" href="javascript:toggle_canvas()">Expand park map</a> <a class="export" href="javascript:export_canvas()">View as an image</a></p>
         <canvas height="250" width="250" id="park-map"></canvas>
     </div>
     <div id="bip-select">
-        <input type="checkbox" checked="checked" id="bip_po" onchange="update_bip(this)"/><label for="bip_po">Pop Outs</label><br/>
-        <input type="checkbox" checked="checked" id="bip_fo" onchange="update_bip(this)"/><label for="bip_fo">Fly Outs</label><br/>
-        <input type="checkbox" checked="checked" id="bip_lo" onchange="update_bip(this)"/><label for="bip_lo">Line Outs</label><br/>
-        <input type="checkbox" checked="checked" id="bip_go" onchange="update_bip(this)"/><label for="bip_go">Ground Outs</label><br/>
-        <input type="checkbox" checked="checked" id="bip_1b" onchange="update_bip(this)"/><label for="bip_1b">Singles</label><br/>
-        <input type="checkbox" checked="checked" id="bip_2b" onchange="update_bip(this)"/><label for="bip_2b">Doubles</label><br/>
-        <input type="checkbox" checked="checked" id="bip_3b" onchange="update_bip(this)"/><label for="bip_3b">Triples</label><br/>
-        <input type="checkbox" checked="checked" id="bip_hr" onchange="update_bip(this)"/><label for="bip_hr">Home runs</label><br/>
+        <div><div class="legend r1"></div><input type="checkbox" checked="checked" id="bip_po" onchange="update_bip(this)"/><label for="bip_po">Pop Outs</label></div>
+        <div><div class="legend r2"></div><input type="checkbox" checked="checked" id="bip_lo" onchange="update_bip(this)"/><label for="bip_lo">Line Outs</label></div>
+        <div><div class="legend r3"></div><input type="checkbox" checked="checked" id="bip_fo" onchange="update_bip(this)"/><label for="bip_fo">Fly Outs</label></div>
+        <div><div class="legend r4"></div><input type="checkbox" checked="checked" id="bip_go" onchange="update_bip(this)"/><label for="bip_go">Ground Outs</label></div>
+        <div><div class="legend b4"></div><input type="checkbox" checked="checked" id="bip_1b" onchange="update_bip(this)"/><label for="bip_1b">Singles</label></div>
+        <div><div class="legend b3"></div><input type="checkbox" checked="checked" id="bip_2b" onchange="update_bip(this)"/><label for="bip_2b">Doubles</label></div>
+        <div><div class="legend b2"></div><input type="checkbox" checked="checked" id="bip_3b" onchange="update_bip(this)"/><label for="bip_3b">Triples</label></div>
+        <div><div class="legend b1"></div><input type="checkbox" checked="checked" id="bip_hr" onchange="update_bip(this)"/><label for="bip_hr">Home runs</label></div>
     </div>
     <div style="clear:both"></div>
     <div>
         <hr />
         <h3>Help</h3>
+        <p>Select a park to grab hits from and a park on which to display them. Every hit is scaled (roughly) to the chosen park to display upon. Things like atmosphere effects or interaction with the walls are completely ignored since I lack the data to properly map the hits to the new field. <strong>Every location is where the ball was fielded by a player, not where it landed.</strong></p>
+        <p>Optionally, you can filter which hits should be displayed by pitcher and/or batter. Most combinations will have few or zero hits. The selections will remain if you change the park you are displaying <em>on</em>, but will be reset if you pick a new park to select hits <em>from</em>.</p>
+        <p>Use the legend on the right-hand side to select which hits to display. Because the variety of events recorded in the data, some coalescing of events was done. For instance, sacrifice flies are considered to be fly outs while force outs, GIDP, and fielders choice outs are considered to be ground outs.
+        The color corresponds to the run value of each type of hit. The mapping is not linear because there was too much similarity between the colors.</p>
+        <p>Finally, although it lists Yankee Stadiums II and III, the image has not actually changed between the two. Consequently I cannot show the difference between the two parks.</p>
+        <h3>Updates</h3>
+        <p>June 29, 2010: Added Hiram Bithorn Stadium. Also, new BIP data is automatically added every week.</p>
         <h3>Glossary</h3>
+        <dl>
+            <dt>BIP</dt>
+            <dd>Ball In Play. I am using a very inclusive sense of "play" since home runs are included, but usually are not considered to be in play.</dd>
+        </dl>
     </div>
 </div>
 <div id="footer"></div>
