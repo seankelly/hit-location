@@ -214,7 +214,9 @@ var K = (function(my, $) {
             draw_park(this);
         }
     }
-}(K, jQuery));
+
+    my.ParkBIP = ParkBIP;
+}(K || {}, jQuery));
 
 /*****************************/
 
