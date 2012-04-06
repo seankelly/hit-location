@@ -16,7 +16,7 @@ function initialize() {
         return;
     }
 
-    bip = new ParkBIP(canvas);
+    bip = new K.ParkBIP(canvas);
     fetch_parks();
     update_bip();
 }
