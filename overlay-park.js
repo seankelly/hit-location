@@ -54,9 +54,9 @@ function msgbox(msg) {
 function toggle_canvas() {
     var canvas = bip.canvas;
     var toggle = $("#canvas-wrapper a.expand");
-    if (canvas == undefined || toggle == undefined)
+    if (canvas === undefined || toggle === undefined)
         return;
-    if (canvas.height == 250) {
+    if (canvas.height === 250) {
         canvas.height = 500;
         canvas.width = 500;
         toggle.text("Shrink park map");
@@ -243,7 +243,7 @@ function populate_years_list(parks) {
     year_list.reverse();
     var options = '';
     for (var i = 0; i < year_list.length; i++) {
-        var selected = (i == 0 ? 'selected="selected" ' : '');
+        var selected = (i === 0 ? 'selected="selected" ' : '');
         options += '<option ' + selected + 'value="' + year_list[i] + '">' + year_list[i] + '</option>';
     }
 
