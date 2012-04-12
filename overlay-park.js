@@ -61,7 +61,15 @@ function update_bip(arg) {
     };
 
     f = function(e) {
-        var el = e instanceof Object ? $(e) : $(this);
+        var el;
+        if (e instanceof Object) {
+            console.log("wrapping e");
+            el = $(e);
+        }
+        else {
+            el = $(this);
+        }
+        //var el = e instanceof Object ? $(e) : $(this);
         var type = id_map[el.attr('id')];
         update[type] = el.attr('checked');
     }
