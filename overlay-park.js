@@ -289,7 +289,7 @@ function populate_filter_list(id) {
 
 (function ($) {
     var id_func_map = [
-        [ '#years',          update_year ],
+        //[ '#years',          update_year ],
         [ '#bip_po',         update_bip ],
         [ '#bip_lo',         update_bip ],
         [ '#bip_fo',         update_bip ],
@@ -298,15 +298,18 @@ function populate_filter_list(id) {
         [ '#bip_2b',         update_bip ],
         [ '#bip_3b',         update_bip ],
         [ '#bip_hr',         update_bip ],
+        /*
         [ '#park-from',      update_park, ],
         [ '#park-on',        update_park, ],
         [ '#pitcher-filter', update_filter, ],
         [ '#batter-filter',  update_filter, ],
+        */
     ];
 
     for (var i = 0; i < id_func_map.length; i++) {
         var id = id_func_map[i][0];
         var fn = id_func_map[i][1];
+        $(id).on('onchange', fn);
     }
 
     function initialize() {
