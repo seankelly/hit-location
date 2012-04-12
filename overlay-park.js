@@ -25,10 +25,6 @@
 var bip;
 
 function initialize() {
-    $("input").each(function(i, E) {
-        //set_bip(E);
-    });
-
     msgbox();
     $("#strerror").ajaxError(function() {
         msgbox("Park fetch failed");
