@@ -63,8 +63,7 @@ function update_bip(arg) {
     f = function(e) {
         var el;
         if (e instanceof Object) {
-            console.log("wrapping e");
-            el = $(e);
+            el = e;
         }
         else {
             el = $(this);
