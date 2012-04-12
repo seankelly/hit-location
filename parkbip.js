@@ -110,7 +110,7 @@ var K = (function(my, $) {
 
         for (var name in park.year[year][type]) {
             if (player) {
-                if (player == name)
+                if (player === name)
                     list.push(name);
             }
             else
@@ -133,9 +133,9 @@ var K = (function(my, $) {
 
 
     var draw_bip = function(that) {
-        if (that._park.on == undefined ||
-            that._park.on == "default" ||
-            that._park.from == undefined)
+        if (that._park.on === undefined ||
+            that._park.on === "default" ||
+            that._park.from === undefined)
             return;
 
         var park_on = that._park[that._park.on];
@@ -149,7 +149,7 @@ var K = (function(my, $) {
         var hp_y = parseFloat(park_on.hp_y);
         var radius = 2;
 
-        if (that.canvas.height == 250) {
+        if (that.canvas.height === 250) {
             scale *= 2;
             hp_x /= 2;
             hp_y /= 2;
@@ -181,7 +181,7 @@ var K = (function(my, $) {
 
     var draw_park = function(that) {
         var id = that._park.on;
-        if (id == undefined || that._park[id] == undefined)
+        if (id === undefined || that._park[id] === undefined)
             return;
         var ctx = that.ctx;
         var width = that.ctx.canvas.width;
