@@ -289,7 +289,7 @@ function populate_filter_list(id) {
 
 (function ($) {
     var id_func_map = [
-        [ '#years',          update_years ],
+        [ '#years',          update_year ],
         [ '#bip_po',         update_bip ],
         [ '#bip_lo',         update_bip ],
         [ '#bip_fo',         update_bip ],
