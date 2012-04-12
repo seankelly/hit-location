@@ -51,40 +51,6 @@ function update_filter(arg) {
     bip.update(update);
 }
 
-function update_bip(arg) {
-    var update = {};
-    var id_map = {
-        'bip_po': 'pop out', 'bip_fo': 'fly out',
-        'bip_lo': 'line out', 'bip_go': 'ground out',
-        'bip_1b': 'single', 'bip_2b': 'double',
-        'bip_3b': 'triple', 'bip_hr': 'home run'
-    };
-
-    f = function(e) {
-        var id, checked;
-        if (e instanceof Object) {
-            id = e.target.id;
-            checked = e.target.checked;
-        }
-        else {
-            var el = $(this);
-            id = el.attr('id');
-            checked = el.attr('checked');
-        }
-        var type = id_map[id];
-        update[type] = checked;
-    }
-
-    if (arg) {
-        f(arg);
-    }
-    else {
-        $("input[id^='bip_']").each(f);
-    }
-
-    bip.update({ hit: update });
-}
-
 function update_park(arg) {
     var update = {};
     if (arg.from) {
@@ -297,6 +263,57 @@ function populate_filter_list(id) {
 }
 
 (function ($) {
+    function update_bip(arg) {
+        var update = {};
+        var id_map = {
+            'bip_po': 'pop out', 'bip_fo': 'fly out',
+            'bip_lo': 'line out', 'bip_go': 'ground out',
+            'bip_1b': 'single', 'bip_2b': 'double',
+            'bip_3b': 'triple', 'bip_hr': 'home run'
+        };
+
+        f = function(e) {
+            var id, checked;
+            if (e instanceof Object) {
+                id = e.target.id;
+                checked = e.target.checked;
+            }
+            else {
+                var el = $(this);
+                id = el.attr('id');
+                checked = el.attr('checked');
+            }
+            var type = id_map[id];
+            update[type] = checked;
+        }
+
+        if (arg) {
+            f(arg);
+        }
+        else {
+            $("input[id^='bip_']").each(f);
+        }
+
+        bip.update({ hit: update });
+    }
+
+    function initialize() {
+        msgbox();
+        $("#strerror").ajaxError(function() {
+            msgbox("Park fetch failed");
+        });
+
+        var canvas = document.getElementById('park-map');
+        if (!canvas.getContext) {
+            msgbox("A browser that supports the canvas element is required. Known browsers to support it include Chrome, Firefox, Opera, and Safari.");
+            return;
+        }
+
+        bip = new K.ParkBIP(canvas);
+        fetch_parks();
+        update_bip();
+    }
+
     var id_func_map = [
         //[ '#years',          update_year ],
         [ '#bip_po',         update_bip ],
@@ -319,23 +336,6 @@ function populate_filter_list(id) {
         var id = id_func_map[i][0];
         var fn = id_func_map[i][1];
         $(id).on('change', fn);
-    }
-
-    function initialize() {
-        msgbox();
-        $("#strerror").ajaxError(function() {
-            msgbox("Park fetch failed");
-        });
-
-        var canvas = document.getElementById('park-map');
-        if (!canvas.getContext) {
-            msgbox("A browser that supports the canvas element is required. Known browsers to support it include Chrome, Firefox, Opera, and Safari.");
-            return;
-        }
-
-        bip = new K.ParkBIP(canvas);
-        fetch_parks();
-        update_bip();
     }
 
     $(initialize);
