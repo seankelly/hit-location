@@ -317,7 +317,7 @@ function populate_filter_list(id) {
     for (var i = 0; i < id_func_map.length; i++) {
         var id = id_func_map[i][0];
         var fn = id_func_map[i][1];
-        $(id).on('onchange', fn);
+        $(id).on('change', fn);
     }
 
     function initialize() {
