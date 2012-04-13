@@ -2,7 +2,7 @@ var bip;
 
 function toggle_canvas() {
     var canvas = bip.canvas;
-    var toggle = $("#canvas-wrapper a.expand");
+    var toggle = $("#toggle_canvas");
     if (canvas === undefined || toggle === undefined)
         return;
     if (canvas.height === 250) {
@@ -320,6 +320,8 @@ function export_canvas() {
     }
 
     var id_func_map = [
+        [ '#toggle_canvas',  toggle_canvas, ],
+        [ '#export_canvas',  export_canvas, ],
         [ '#years',          update_year ],
         [ '#bip_po',         update_bip ],
         [ '#bip_lo',         update_bip ],
