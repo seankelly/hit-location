@@ -51,19 +51,19 @@ function update_filter(arg) {
     bip.update(update);
 }
 
-function update_park(arg) {
+function update_park(ev) {
     var update = {};
-    if (arg.from) {
-        var id = arg.from.value;
+    var id = ev.target.id;
+    if (id === 'park-from') {
         var year = get_year();
-        update.park_from = id;
+        update.park_from = ev.target.value;
         if (bip.bip_exists(id, year))
             populate_filter_list(id);
         else
             fetch_bip(id);
     }
-    if (arg.on) {
-        update.park_on = arg.on.value;
+    else if (id === 'park-on') {
+        update.park_on = ev.target.value;
     }
 
     bip.update(update);
@@ -324,9 +324,9 @@ function populate_filter_list(id) {
         [ '#bip_2b',         update_bip ],
         [ '#bip_3b',         update_bip ],
         [ '#bip_hr',         update_bip ],
-        /*
         [ '#park-from',      update_park, ],
         [ '#park-on',        update_park, ],
+        /*
         [ '#pitcher-filter', update_filter, ],
         [ '#batter-filter',  update_filter, ],
         */
