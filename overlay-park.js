@@ -303,10 +303,12 @@ function populate_filter_list(id) {
         if (id === 'park-from') {
             var year = get_year();
             update.park_from = park;
-            if (bip.bip_exists(park, year))
+            if (bip.bip_exists(park, year)) {
                 populate_filter_list(park);
-            else
+            }
+            else {
                 fetch_bip(park);
+            }
         }
         else if (id === 'park-on') {
             update.park_on = park;
