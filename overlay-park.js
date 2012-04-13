@@ -320,27 +320,28 @@ function export_canvas() {
     }
 
     var id_func_map = [
-        [ '#toggle_canvas',  toggle_canvas, ],
-        [ '#export_canvas',  export_canvas, ],
-        [ '#years',          update_year ],
-        [ '#bip_po',         update_bip ],
-        [ '#bip_lo',         update_bip ],
-        [ '#bip_fo',         update_bip ],
-        [ '#bip_go',         update_bip ],
-        [ '#bip_1b',         update_bip ],
-        [ '#bip_2b',         update_bip ],
-        [ '#bip_3b',         update_bip ],
-        [ '#bip_hr',         update_bip ],
-        [ '#park-from',      update_park, ],
-        [ '#park-on',        update_park, ],
-        [ '#pitcher-filter', update_filter, ],
-        [ '#batter-filter',  update_filter, ],
+        [ 'click',  '#toggle_canvas',  toggle_canvas, ],
+        [ 'click',  '#export_canvas',  export_canvas, ],
+        [ 'change', '#years',          update_year ],
+        [ 'change', '#bip_po',         update_bip ],
+        [ 'change', '#bip_lo',         update_bip ],
+        [ 'change', '#bip_fo',         update_bip ],
+        [ 'change', '#bip_go',         update_bip ],
+        [ 'change', '#bip_1b',         update_bip ],
+        [ 'change', '#bip_2b',         update_bip ],
+        [ 'change', '#bip_3b',         update_bip ],
+        [ 'change', '#bip_hr',         update_bip ],
+        [ 'change', '#park-from',      update_park, ],
+        [ 'change', '#park-on',        update_park, ],
+        [ 'change', '#pitcher-filter', update_filter, ],
+        [ 'change', '#batter-filter',  update_filter, ],
     ];
 
     for (var i = 0; i < id_func_map.length; i++) {
-        var id = id_func_map[i][0];
-        var fn = id_func_map[i][1];
-        $(id).on('change', fn);
+        var ev = id_func_map[i][0];
+        var id = id_func_map[i][1];
+        var fn = id_func_map[i][2];
+        $(id).on(ev, fn);
     }
 
     $(initialize);
