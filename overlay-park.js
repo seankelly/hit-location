@@ -38,20 +38,6 @@ function export_canvas() {
     window.open(png, 'png_canvas', 'width=' + width + ',height=' + height);
 }
 
-function update_filter(ev) {
-    var update = {};
-    function m(v) { return (v != "all" ? v : undefined); }
-    var id = ev.target.id;
-    if (id === 'pitcher-filter') {
-        update.pitcher = m(ev.target.value);
-    }
-    else if (id === 'batter-filter') {
-        update.batter = m(ev.target.value);
-    }
-
-    bip.update(update);
-}
-
 function get_year() { return $("#years").val(); }
 
 function fetch_bip(id, update) {
@@ -313,6 +299,20 @@ function populate_filter_list(id) {
         }
         else if (id === 'park-on') {
             update.park_on = park;
+        }
+
+        bip.update(update);
+    }
+
+    function update_filter(ev) {
+        var update = {};
+        function m(v) { return (v != "all" ? v : undefined); }
+        var id = ev.target.id;
+        if (id === 'pitcher-filter') {
+            update.pitcher = m(ev.target.value);
+        }
+        else if (id === 'batter-filter') {
+            update.batter = m(ev.target.value);
         }
 
         bip.update(update);
