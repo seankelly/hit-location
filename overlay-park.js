@@ -69,14 +69,6 @@ function update_park(arg) {
     bip.update(update);
 }
 
-function update_year() {
-    var update = {};
-    update.year = get_year();
-    populate_parks_from();
-
-    bip.update(update);
-}
-
 function get_year() { return $("#years").val(); }
 
 function fetch_bip(id, update) {
@@ -161,6 +153,14 @@ function populate_filter_list(id) {
 }
 
 (function ($) {
+    function update_year() {
+        var update = {};
+        update.year = get_year();
+        populate_parks_from();
+
+        bip.update(update);
+    }
+
     function update_bip(arg) {
         var update = {};
         var id_map = {
@@ -315,7 +315,7 @@ function populate_filter_list(id) {
     }
 
     var id_func_map = [
-        //[ '#years',          update_year ],
+        [ '#years',          update_year ],
         [ '#bip_po',         update_bip ],
         [ '#bip_lo',         update_bip ],
         [ '#bip_fo',         update_bip ],
