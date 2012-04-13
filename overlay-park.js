@@ -38,14 +38,15 @@ function export_canvas() {
     window.open(png, 'png_canvas', 'width=' + width + ',height=' + height);
 }
 
-function update_filter(arg) {
+function update_filter(ev) {
     var update = {};
     function m(v) { return (v != "all" ? v : undefined); }
-    if (arg.pitcher) {
-        update.pitcher = m(arg.pitcher.value);
+    var id = ev.target.id;
+    if (id === 'pitcher-filter') {
+        update.pitcher = m(ev.target.value);
     }
-    if (arg.batter) {
-        update.batter = m(arg.batter.value);
+    else if (id === 'batter-filter') {
+        update.batter = m(ev.target.value);
     }
 
     bip.update(update);
@@ -329,10 +330,8 @@ function populate_filter_list(id) {
         [ '#bip_hr',         update_bip ],
         [ '#park-from',      update_park, ],
         [ '#park-on',        update_park, ],
-        /*
         [ '#pitcher-filter', update_filter, ],
         [ '#batter-filter',  update_filter, ],
-        */
     ];
 
     for (var i = 0; i < id_func_map.length; i++) {
