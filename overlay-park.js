@@ -54,16 +54,17 @@ function update_filter(arg) {
 function update_park(ev) {
     var update = {};
     var id = ev.target.id;
+    var park = ev.target.value;
     if (id === 'park-from') {
         var year = get_year();
-        update.park_from = ev.target.value;
-        if (bip.bip_exists(id, year))
-            populate_filter_list(id);
+        update.park_from = park;
+        if (bip.bip_exists(park, year))
+            populate_filter_list(park);
         else
-            fetch_bip(id);
+            fetch_bip(park);
     }
     else if (id === 'park-on') {
-        update.park_on = ev.target.value;
+        update.park_on = park;
     }
 
     bip.update(update);
