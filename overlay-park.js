@@ -1,15 +1,5 @@
 var bip;
 
-function msgbox(msg) {
-    var box = $("#strerror");
-    if (msg) {
-        box.text(msg).show();
-    }
-    else {
-        box.hide();
-    }
-}
-
 function toggle_canvas() {
     var canvas = bip.canvas;
     var toggle = $("#canvas-wrapper a.expand");
@@ -38,90 +28,84 @@ function export_canvas() {
     window.open(png, 'png_canvas', 'width=' + width + ',height=' + height);
 }
 
-function get_year() { return $("#years").val(); }
-
-function fetch_bip(id, update) {
-    var year = get_year();
-    var url = "bip/park-" + id + "-" + year + ".json";
-    bip.fetching(true);
-    $.getJSON(url, function(json) {
-        msgbox();
-        parse_bip(id, year, json);
-        populate_filter_list(id);
-        bip.fetching(false);
-    });
-}
-
-function parse_bip(id, year, bip_json) {
-    // Here I thought there would be one or two events that need mapping.
-    // Turns out there is going to be a ton. WTF MLBAM?
-    var event_map = {
-        'force out': 'ground out', 'forceout': 'ground out',
-        'grounded into dp': 'ground out', 'groundout': 'ground out',
-        'fielders choice out': 'ground out',
-        'sac fly': 'fly out', 'flyout': 'fly out',
-        'lineout': 'line out'
-    };
-    var park = {
-        batters: { },
-        pitchers: { }
-    };
-
-    park.hit = [ ];
-
-    // Scale things for the 250x250 image.
-    var image = bip.get_park_factors(id);
-    if (!image) {
-        msgbox("Couldn't get image scale factors for park id " + id + ".");
-        return;
-    }
-    image.scale *= 2;
-    image.hp_x /= 2;
-    image.hp_y /= 2;
-
-    for (var i = 0; i < bip_json.length; i++) {
-        var hit = bip_json[i];
-        hit.x = (hit.x - image.hp_x) * image.scale;
-        hit.y = (image.hp_y - hit.y) * image.scale;
-        hit.event = hit.event.toLowerCase();
-
-        if (event_map[hit.event])
-            hit.event = event_map[hit.event];
-
-        if (park.batters[hit.batter])
-            park.batters[hit.batter]++;
-        else
-            park.batters[hit.batter] = 1;
-
-        if (park.pitchers[hit.pitcher])
-            park.pitchers[hit.pitcher]++;
-        else
-            park.pitchers[hit.pitcher] = 1;
-
-        park.hit.push(hit);
-    }
-
-    bip.add_bip(id, year, park);
-}
-
-function populate_filter_list(id) {
-    which = function(w, element) {
-        var suffix_map = { 'pitchers': 'P', 'batters': 'H' };
-        var suffix = suffix_map[w];
-        var list = bip.get_players(id, w);
-        element.empty();
-        var insert_text = '<option value="all">All</option><option value="L">LH' + suffix + '</option><option value="R">RH' + suffix + '</option>';
-        for (var i = 0; i < list.length; i++) {
-            insert_text += '<option value="' + list[i] + '">' + list[i] + '</option>';
-        }
-        element.append(insert_text);
-    }
-
-    which('pitchers', $("#pitcher-filter"));
-    which('batters', $("#batter-filter"));
-}
 
 (function ($) {
+    function get_year() { return $("#years").val(); }
+
+    function msgbox(msg) {
+        var box = $("#strerror");
+        if (msg) {
+            box.text(msg).show();
+        }
+        else {
+            box.hide();
+        }
+    }
+
+    function fetch_bip(id, update) {
+        var year = get_year();
+        var url = "bip/park-" + id + "-" + year + ".json";
+        bip.fetching(true);
+        $.getJSON(url, function(json) {
+            msgbox();
+            parse_bip(id, year, json);
+            populate_filter_list(id);
+            bip.fetching(false);
+        });
+    }
+
+    function parse_bip(id, year, bip_json) {
+        // Here I thought there would be one or two events that need mapping.
+        // Turns out there is going to be a ton. WTF MLBAM?
+        var event_map = {
+            'force out': 'ground out', 'forceout': 'ground out',
+            'grounded into dp': 'ground out', 'groundout': 'ground out',
+            'fielders choice out': 'ground out',
+            'sac fly': 'fly out', 'flyout': 'fly out',
+            'lineout': 'line out'
+        };
+        var park = {
+            batters: { },
+            pitchers: { }
+        };
+
+        park.hit = [ ];
+
+        // Scale things for the 250x250 image.
+        var image = bip.get_park_factors(id);
+        if (!image) {
+            msgbox("Couldn't get image scale factors for park id " + id + ".");
+            return;
+        }
+        image.scale *= 2;
+        image.hp_x /= 2;
+        image.hp_y /= 2;
+
+        for (var i = 0; i < bip_json.length; i++) {
+            var hit = bip_json[i];
+            hit.x = (hit.x - image.hp_x) * image.scale;
+            hit.y = (image.hp_y - hit.y) * image.scale;
+            hit.event = hit.event.toLowerCase();
+
+            if (event_map[hit.event])
+                hit.event = event_map[hit.event];
+
+            if (park.batters[hit.batter])
+                park.batters[hit.batter]++;
+            else
+                park.batters[hit.batter] = 1;
+
+            if (park.pitchers[hit.pitcher])
+                park.pitchers[hit.pitcher]++;
+            else
+                park.pitchers[hit.pitcher] = 1;
+
+            park.hit.push(hit);
+        }
+
+        bip.add_bip(id, year, park);
+    }
+
     function update_year() {
         var update = {};
         update.year = get_year();
@@ -316,6 +300,23 @@ function populate_filter_list(id) {
         }
 
         bip.update(update);
+    }
+
+    function populate_filter_list(id) {
+        which = function(w, element) {
+            var suffix_map = { 'pitchers': 'P', 'batters': 'H' };
+            var suffix = suffix_map[w];
+            var list = bip.get_players(id, w);
+            element.empty();
+            var insert_text = '<option value="all">All</option><option value="L">LH' + suffix + '</option><option value="R">RH' + suffix + '</option>';
+            for (var i = 0; i < list.length; i++) {
+                insert_text += '<option value="' + list[i] + '">' + list[i] + '</option>';
+            }
+            element.append(insert_text);
+        }
+
+        which('pitchers', $("#pitcher-filter"));
+        which('batters', $("#batter-filter"));
     }
 
     var id_func_map = [
