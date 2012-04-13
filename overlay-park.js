@@ -79,23 +79,6 @@ function update_year() {
 
 function get_year() { return $("#years").val(); }
 
-function fetch_parks() {
-    bip.fetching(true);
-    $.getJSON("bip/parks.json", function(json) {
-        var parks = { };
-        for (var i = 0; i < json.length; i++) {
-            json[i].hp_x = parseFloat(json[i].hp_x);
-            json[i].hp_y = parseFloat(json[i].hp_y);
-            json[i].scale = parseFloat(json[i].scale);
-            parks[json[i].id] = json[i];
-        }
-
-        bip.add_parks(parks);
-        populate_years_list(parks);
-        bip.fetching(false);
-    });
-}
-
 function fetch_bip(id, update) {
     var year = get_year();
     var url = "bip/park-" + id + "-" + year + ".json";
@@ -158,91 +141,6 @@ function parse_bip(id, year, bip_json) {
     }
 
     bip.add_bip(id, year, park);
-}
-
-function populate_years_list(parks) {
-    var years = {};
-    var year_list = [];
-
-    for (var id in parks) {
-        for (var year in parks[id].years) {
-            if (!(year in years)) {
-                years[year] = true;
-                year_list.push(year);
-            }
-        }
-    }
-
-    year_list.sort();
-    year_list.reverse();
-    var options = '';
-    for (var i = 0; i < year_list.length; i++) {
-        var selected = (i === 0 ? 'selected="selected" ' : '');
-        options += '<option ' + selected + 'value="' + year_list[i] + '">' + year_list[i] + '</option>';
-    }
-
-    var year_select = $("#years");
-    year_select.empty();
-    year_select.append(options);
-    update_year();
-
-    populate_parks_list();
-}
-
-// parks is a mapping of id => stuff
-// I need a mapping of park => id, but sorted
-function _sorted_parks() {
-    var sorted = { };
-    var list = [ ];
-    var parks = bip._park;
-    for (var id in parks) {
-        if (isNaN(parseInt(id))) continue;
-        sorted[parks[id].name] = id;
-        list.push(parks[id].name);
-    }
-    list.sort(function(a, b) {
-        return a.toLowerCase() < b.toLowerCase() ? -1 : 1;
-    });
-
-    list.push(sorted);
-    return list;
-}
-
-function populate_parks_from() {
-    var from = $("#park-from");
-    var year = get_year();
-    var parks = bip._park;
-
-    var list = _sorted_parks();
-    var sorted_list = list.pop();
-    var insert =  '<option selected="selected" disabled="disabled">Select a park</option>';
-    for (var i = 0; i < list.length; i++) {
-        var park = parks[sorted_list[list[i]]];
-        if (park.bip > 0 && park.years[year])
-            insert += '<option value="' + sorted_list[list[i]] + '">' + list[i] + '</option>';
-    }
-
-    from.empty();
-    from.append(insert);
-}
-
-function populate_parks_on() {
-    var on = $("#park-on");
-
-    var list = _sorted_parks();
-    var sorted_list = list.pop();
-    var insert =  '<option selected="selected" disabled="disabled">Select a park</option>';
-    for (var i = 0; i < list.length; i++) {
-        insert += '<option value="' + sorted_list[list[i]] + '">' + list[i] + '</option>';
-    }
-
-    on.empty();
-    on.append(insert);
-}
-
-function populate_parks_list() {
-    populate_parks_from();
-    populate_parks_on();
 }
 
 function populate_filter_list(id) {
@@ -312,6 +210,108 @@ function populate_filter_list(id) {
         bip = new K.ParkBIP(canvas);
         fetch_parks();
         update_bip();
+    }
+
+    function fetch_parks() {
+        bip.fetching(true);
+        $.getJSON("bip/parks.json", function(json) {
+            var parks = { };
+            for (var i = 0; i < json.length; i++) {
+                json[i].hp_x = parseFloat(json[i].hp_x);
+                json[i].hp_y = parseFloat(json[i].hp_y);
+                json[i].scale = parseFloat(json[i].scale);
+                parks[json[i].id] = json[i];
+            }
+
+            bip.add_parks(parks);
+            populate_years_list(parks);
+            bip.fetching(false);
+        });
+    }
+
+    function populate_years_list(parks) {
+        var years = {};
+        var year_list = [];
+
+        for (var id in parks) {
+            for (var year in parks[id].years) {
+                if (!(year in years)) {
+                    years[year] = true;
+                    year_list.push(year);
+                }
+            }
+        }
+
+        year_list.sort();
+        year_list.reverse();
+        var options = '';
+        for (var i = 0; i < year_list.length; i++) {
+            var selected = (i === 0 ? 'selected="selected" ' : '');
+            options += '<option ' + selected + 'value="' + year_list[i] + '">' + year_list[i] + '</option>';
+        }
+
+        var year_select = $("#years");
+        year_select.empty();
+        year_select.append(options);
+        update_year();
+
+        populate_parks_list();
+    }
+
+    // parks is a mapping of id => stuff
+    // I need a mapping of park => id, but sorted
+    function _sorted_parks() {
+        var sorted = { };
+        var list = [ ];
+        var parks = bip._park;
+        for (var id in parks) {
+            if (isNaN(parseInt(id))) continue;
+            sorted[parks[id].name] = id;
+            list.push(parks[id].name);
+        }
+        list.sort(function(a, b) {
+            return a.toLowerCase() < b.toLowerCase() ? -1 : 1;
+        });
+
+        list.push(sorted);
+        return list;
+    }
+
+    function populate_parks_from() {
+        var from = $("#park-from");
+        var year = get_year();
+        var parks = bip._park;
+
+        var list = _sorted_parks();
+        var sorted_list = list.pop();
+        var insert =  '<option selected="selected" disabled="disabled">Select a park</option>';
+        for (var i = 0; i < list.length; i++) {
+            var park = parks[sorted_list[list[i]]];
+            if (park.bip > 0 && park.years[year])
+                insert += '<option value="' + sorted_list[list[i]] + '">' + list[i] + '</option>';
+        }
+
+        from.empty();
+        from.append(insert);
+    }
+
+    function populate_parks_on() {
+        var on = $("#park-on");
+
+        var list = _sorted_parks();
+        var sorted_list = list.pop();
+        var insert =  '<option selected="selected" disabled="disabled">Select a park</option>';
+        for (var i = 0; i < list.length; i++) {
+            insert += '<option value="' + sorted_list[list[i]] + '">' + list[i] + '</option>';
+        }
+
+        on.empty();
+        on.append(insert);
+    }
+
+    function populate_parks_list() {
+        populate_parks_from();
+        populate_parks_on();
     }
 
     var id_func_map = [
