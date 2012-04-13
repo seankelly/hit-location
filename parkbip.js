@@ -96,7 +96,7 @@ var K = (function(my, $) {
     }
 
     ParkBIP.prototype.bip_exists = function(id, year) {
-        if (this._park[id] && this._park[id].year instanceof Object && this._park[id].year[year] instanceof Array)
+        if (this._park[id] && this._park[id].year && this._park[id].year[year])
             return true;
         return false;
     }
