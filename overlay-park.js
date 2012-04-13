@@ -51,25 +51,6 @@ function update_filter(arg) {
     bip.update(update);
 }
 
-function update_park(ev) {
-    var update = {};
-    var id = ev.target.id;
-    var park = ev.target.value;
-    if (id === 'park-from') {
-        var year = get_year();
-        update.park_from = park;
-        if (bip.bip_exists(park, year))
-            populate_filter_list(park);
-        else
-            fetch_bip(park);
-    }
-    else if (id === 'park-on') {
-        update.park_on = park;
-    }
-
-    bip.update(update);
-}
-
 function get_year() { return $("#years").val(); }
 
 function fetch_bip(id, update) {
@@ -313,6 +294,25 @@ function populate_filter_list(id) {
     function populate_parks_list() {
         populate_parks_from();
         populate_parks_on();
+    }
+
+    function update_park(ev) {
+        var update = {};
+        var id = ev.target.id;
+        var park = ev.target.value;
+        if (id === 'park-from') {
+            var year = get_year();
+            update.park_from = park;
+            if (bip.bip_exists(park, year))
+                populate_filter_list(park);
+            else
+                fetch_bip(park);
+        }
+        else if (id === 'park-on') {
+            update.park_on = park;
+        }
+
+        bip.update(update);
     }
 
     var id_func_map = [
