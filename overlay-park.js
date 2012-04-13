@@ -1,35 +1,6 @@
-var bip;
-
-function toggle_canvas() {
-    var canvas = bip.canvas;
-    var toggle = $("#toggle_canvas");
-    if (canvas === undefined || toggle === undefined)
-        return;
-    if (canvas.height === 250) {
-        canvas.height = 500;
-        canvas.width = 500;
-        toggle.text("Shrink park map");
-    }
-    else {
-        canvas.height = 250;
-        canvas.width = 250;
-        toggle.text("Expand park map");
-    }
-    bip.draw();
-}
-
-function export_canvas() {
-    var png = bip.canvas.toDataURL('image/png');
-    // Add 5% to the window size to attempt to compensate for the window
-    // borders. Just hoping to prevent scrolling or scaling of image.
-    // The 500x500 had no scaling for me, but 250x250 did. Close enough.
-    var width = parseInt(bip.canvas.width*1.05);
-    var height = parseInt(bip.canvas.height*1.05);
-    window.open(png, 'png_canvas', 'width=' + width + ',height=' + height);
-}
-
-
 (function ($) {
+    var bip;
+
     function get_year() { return $("#years").val(); }
 
     function msgbox(msg) {
@@ -40,6 +11,34 @@ function export_canvas() {
         else {
             box.hide();
         }
+    }
+
+    function toggle_canvas() {
+        var canvas = bip.canvas;
+        var toggle = $("#toggle_canvas");
+        if (canvas === undefined || toggle === undefined)
+            return;
+        if (canvas.height === 250) {
+            canvas.height = 500;
+            canvas.width = 500;
+            toggle.text("Shrink park map");
+        }
+        else {
+            canvas.height = 250;
+            canvas.width = 250;
+            toggle.text("Expand park map");
+        }
+        bip.draw();
+    }
+
+    function export_canvas() {
+        var png = bip.canvas.toDataURL('image/png');
+        // Add 5% to the window size to attempt to compensate for the window
+        // borders. Just hoping to prevent scrolling or scaling of image.
+        // The 500x500 had no scaling for me, but 250x250 did. Close enough.
+        var width = parseInt(bip.canvas.width*1.05);
+        var height = parseInt(bip.canvas.height*1.05);
+        window.open(png, 'png_canvas', 'width=' + width + ',height=' + height);
     }
 
     function fetch_bip(id, update) {
