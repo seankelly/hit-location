@@ -1,4 +1,5 @@
 (function ($) {
+    'use strict';
     var bip;
 
     function get_year() { return $("#years").val(); }
