@@ -303,7 +303,7 @@
     }
 
     function populate_filter_list(id) {
-        which = function(w, element) {
+        var which = function(w, element) {
             var suffix_map = { 'pitchers': 'P', 'batters': 'H' };
             var suffix = suffix_map[w];
             var list = bip.get_players(id, w);
