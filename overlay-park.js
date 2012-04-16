@@ -123,7 +123,7 @@
             'bip_3b': 'triple', 'bip_hr': 'home run'
         };
 
-        f = function(e) {
+        var f = function(e) {
             var id, checked;
             if (e instanceof Object) {
                 id = e.target.id;
