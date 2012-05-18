@@ -170,9 +170,6 @@
         $.getJSON("bip/parks.json", function(json) {
             var parks = { };
             for (var i = 0; i < json.length; i++) {
-                json[i].hp_x = parseFloat(json[i].hp_x);
-                json[i].hp_y = parseFloat(json[i].hp_y);
-                json[i].scale = parseFloat(json[i].scale);
                 parks[json[i].id] = json[i];
             }
 
