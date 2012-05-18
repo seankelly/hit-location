@@ -144,9 +144,9 @@ var K = (function(my, $) {
         var ctx = that.ctx;
         var year = that.year;
 
-        var scale = parseFloat(park_on.scale);
-        var hp_x = parseFloat(park_on.hp_x);
-        var hp_y = parseFloat(park_on.hp_y);
+        var scale = park_on.scale;
+        var hp_x = park_on.hp_x;
+        var hp_y = park_on.hp_y;
         var radius = 2;
 
         if (that.canvas.height === 250) {
