@@ -167,13 +167,8 @@
 
     function fetch_parks() {
         bip.fetching(true);
-        $.getJSON("bip/parks.json", function(json) {
-            var parks = { };
-            for (var i = 0; i < json.length; i++) {
-                parks[json[i].id] = json[i];
-            }
-
-            bip.add_parks(parks);
+        $.getJSON("bip/parks.json", function(park_data) {
+            bip.add_parks(park_data);
             populate_years_list(parks);
             bip.fetching(false);
         });
