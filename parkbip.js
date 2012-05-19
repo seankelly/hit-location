@@ -199,6 +199,11 @@ var K = (function(my, $) {
         }
     }
 
+    var draw_image = function(ctx, img, x, y, w, h) {
+        ctx.clearRect(x, y, w, h);
+        ctx.drawImage(img, x, y, w, h);
+    }
+
     var draw_park = function(that) {
         var id = that._park.on;
         if (id === undefined || that._park[id] === undefined)
@@ -218,7 +223,7 @@ var K = (function(my, $) {
         }
 
         if (images[factors.file]) {
-            ctx.drawImage(images[factors.file], 0, 0, width, height);
+            draw_image(images[factors.file], 0, 0, width, height);
             draw_bip(that);
         }
         else {
@@ -228,7 +233,7 @@ var K = (function(my, $) {
             var f;
             f = function() {
                 if (img.complete) {
-                    ctx.drawImage(img, 0, 0, width, height);
+                    draw_image(img, 0, 0, width, height);
                     draw_bip(that);
                 }
                 else {
