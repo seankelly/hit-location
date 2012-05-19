@@ -140,9 +140,9 @@ var K = (function(my, $) {
             }
             if (image_year > 0) {
                 return {
-                    hp_x: this._park[id].image[image_year].hp_x,
-                    hp_y: this._park[id].image[image_year].hp_y,
-                    scale: this._park[id].image[image_year].scale
+                    hp_x: this._park[id].images[image_year].hp_x,
+                    hp_y: this._park[id].images[image_year].hp_y,
+                    scale: this._park[id].images[image_year].scale
                 };
             }
         }
