@@ -72,7 +72,7 @@
         park.hit = [ ];
 
         // Scale things for the 250x250 image.
-        var image = bip.get_park_factors(id);
+        var image = bip.get_park_factors(id, year);
         if (!image) {
             msgbox("Couldn't get image scale factors for park id " + id + ".");
             return;

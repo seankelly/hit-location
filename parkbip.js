@@ -129,13 +129,22 @@ var K = (function(my, $) {
         return list;
     }
 
-    ParkBIP.prototype.get_park_factors = function(id) {
-        if (this._park[id]) {
-            return {
-                hp_x: this._park[id].hp_x,
-                hp_y: this._park[id].hp_y,
-                scale: this._park[id].scale
-            };
+    ParkBIP.prototype.get_park_factors = function(id, year) {
+        if (this._park[id] && this._park[id].images) {
+            var order = this._park[id].images.order;
+            var image_year = 0;
+            for (var i = 0; i < order.length; i++) {
+                if (year < order[i]) {
+                    image_year = order[i];
+                }
+            }
+            if (image_year > 0) {
+                return {
+                    hp_x: this._park[id].image[image_year].hp_x,
+                    hp_y: this._park[id].image[image_year].hp_y,
+                    scale: this._park[id].image[image_year].scale
+                };
+            }
         }
     }
 
