@@ -213,7 +213,7 @@ var K = (function(my, $) {
         // If not factors found, then it's the default image. Fake something to
         // get it to download and display properly.
         if (!factors) {
-            images = park.image;
+            images = park.image |= {};
             factors = { file: 'default.png' };
         }
 
