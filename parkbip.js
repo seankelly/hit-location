@@ -134,7 +134,7 @@ var K = (function(my, $) {
             var order = this._park[id].images.order;
             var image_year = 0;
             for (var i = 0; i < order.length; i++) {
-                if (year <= order[i]) {
+                if (year >= order[i]) {
                     image_year = order[i];
                 }
             }
