@@ -155,21 +155,23 @@ var K = (function(my, $) {
             that._park.from === undefined)
             return;
 
-        var park_on = that._park[that._park.on];
+        var on_id = that._park.on;
+        var park_on = that._park[on_id];
         var pitcher = that.filter.pitcher;
         var batter = that.filter.batter;
         var ctx = that.ctx;
         var year = that.year;
 
-        var scale = park_on.scale;
-        var hp_x = park_on.hp_x;
-        var hp_y = park_on.hp_y;
+        var factors = that.get_park_factors(on_id, year);
+        if (!factors)
+            return;
+        var scale = factors.scale;
+        var hp_x = factors.hp_x * that.canvas.width;
+        var hp_y = factors.hp_y * that.canvas.height;
         var radius = 2;
 
         if (that.canvas.height === 250) {
             scale *= 2;
-            hp_x /= 2;
-            hp_y /= 2;
             radius = 1;
         }
 
