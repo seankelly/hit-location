@@ -142,7 +142,8 @@ var K = (function(my, $) {
                 return {
                     hp_x: this._park[id].images[image_year].hp_x,
                     hp_y: this._park[id].images[image_year].hp_y,
-                    scale: this._park[id].images[image_year].scale
+                    scale: this._park[id].images[image_year].scale,
+                    file: this._park[id].images[image_year].file
                 };
             }
         }
