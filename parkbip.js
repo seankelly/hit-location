@@ -226,10 +226,10 @@ var K = (function(my, $) {
                     draw_bip(that);
                 }
                 else {
-                    setTimeout(f, 10);
+                    setTimeout(f, 15);
                 }
             }
-            setTimeout(f, 10);
+            setTimeout(f, 50);
         }
     }
 
