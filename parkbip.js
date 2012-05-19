@@ -78,7 +78,7 @@ var K = (function(my, $) {
         for (var id in arg) {
             if (arg[id].years) {
                 var order = [];
-                for (var year in arg[id].years) {
+                for (var year in arg[id].images) {
                     order.push(parseInt(year))
                 }
                 order.sort();
