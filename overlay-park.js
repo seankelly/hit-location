@@ -71,15 +71,17 @@
 
         park.hit = [ ];
 
-        // Scale things for the 250x250 image.
         var image = bip.get_park_factors(id, year);
         if (!image) {
             msgbox("Couldn't get image scale factors for park id " + id + ".");
             return;
         }
+        // The scale I derive is from a 500x500 image. The BIP marked by the
+        // Gameday stringers is based on a 250x250 image, so re-scale the BIP
+        // based on that.
         image.scale *= 2;
-        image.hp_x /= 2;
-        image.hp_y /= 2;
+        image.hp_x *= 250;
+        image.hp_y *= 250;
 
         for (var i = 0; i < bip_json.length; i++) {
             var hit = bip_json[i];
