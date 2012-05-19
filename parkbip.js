@@ -223,7 +223,7 @@ var K = (function(my, $) {
         }
 
         if (images[factors.file]) {
-            draw_image(images[factors.file], 0, 0, width, height);
+            draw_image(ctx, images[factors.file], 0, 0, width, height);
             draw_bip(that);
         }
         else {
@@ -233,7 +233,7 @@ var K = (function(my, $) {
             var f;
             f = function() {
                 if (img.complete) {
-                    draw_image(img, 0, 0, width, height);
+                    draw_image(ctx, img, 0, 0, width, height);
                     draw_bip(that);
                 }
                 else {
