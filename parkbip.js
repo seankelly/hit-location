@@ -207,14 +207,18 @@ var K = (function(my, $) {
         var width = that.ctx.canvas.width;
         var height = that.ctx.canvas.height;
         var park = that._park[id];
-        if (park.image) {
-            ctx.drawImage(park.image, 0, 0, width, height);
+        var year = that.year;
+        var factors = that.get_park_factors(id, year);
+        var images = park.images;
+
+        if (images[factors.file]) {
+            ctx.drawImage(images[factors.file], 0, 0, width, height);
             draw_bip(that);
         }
         else {
             var img = new Image();
-            img.src = "img/" + id + ".png";
-            park.image = img;
+            img.src = "img/" + factors.file;
+            images[factors.file] = img;
             var f;
             f = function() {
                 if (img.complete) {
