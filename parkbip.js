@@ -76,12 +76,14 @@ var K = (function(my, $) {
         // Add in the 'default' park
         arg['default'] = {};
         for (var id in arg) {
-            var order = [];
-            for (var year in arg[id].years) {
-                order.push(parseInt(year))
+            if (arg[id].years) {
+                var order = [];
+                for (var year in arg[id].years) {
+                    order.push(parseInt(year))
+                }
+                order.sort();
+                arg[id].images.order = order;
             }
-            order.sort();
-            arg[id].images.order = order;
             this._park[id] = arg[id];
         }
     }
