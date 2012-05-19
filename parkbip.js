@@ -210,6 +210,12 @@ var K = (function(my, $) {
         var year = that.year;
         var factors = that.get_park_factors(id, year);
         var images = park.images;
+        // If not factors found, then it's the default image. Fake something to
+        // get it to download and display properly.
+        if (!factors) {
+            images = park.image;
+            factors = { file: 'default.png' };
+        }
 
         if (images[factors.file]) {
             ctx.drawImage(images[factors.file], 0, 0, width, height);
