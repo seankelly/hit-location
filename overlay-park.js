@@ -169,7 +169,7 @@
         bip.fetching(true);
         $.getJSON("bip/parks.json", function(park_data) {
             bip.add_parks(park_data);
-            populate_years_list(parks);
+            populate_years_list(park_data);
             bip.fetching(false);
         });
     }
