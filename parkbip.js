@@ -199,9 +199,15 @@ var K = (function(my, $) {
         }
     }
 
-    var draw_image = function(ctx, img, x, y, w, h) {
+    var draw_image = function(ctx, img, file, x, y, w, h) {
+        var is_svg = /\.svg$/;
         ctx.clearRect(x, y, w, h);
-        ctx.drawImage(img, x, y, w, h);
+        if (is_svg.test(file)) {
+            ctx.drawSvg('img/' + file, x, y, w, h);
+        }
+        else {
+            ctx.drawImage(img, x, y, w, h);
+        }
     }
 
     var draw_park = function(that) {
@@ -223,7 +229,7 @@ var K = (function(my, $) {
         }
 
         if (images[factors.file]) {
-            draw_image(ctx, images[factors.file], 0, 0, width, height);
+            draw_image(ctx, images[factors.file], factors.file, 0, 0, width, height);
             draw_bip(that);
         }
         else {
@@ -233,7 +239,7 @@ var K = (function(my, $) {
             var f;
             f = function() {
                 if (img.complete) {
-                    draw_image(ctx, img, 0, 0, width, height);
+                    draw_image(ctx, img, factors.file, 0, 0, width, height);
                     draw_bip(that);
                 }
                 else {
