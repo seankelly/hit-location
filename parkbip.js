@@ -140,8 +140,10 @@ var K = (function(my, $) {
             }
             if (image_year > 0) {
                 return {
-                    hp_x: this._park[id].images[image_year].image_hp_x,
-                    hp_y: this._park[id].images[image_year].image_hp_y,
+                    hp_x: this._park[id].images[image_year].hp_x,
+                    hp_y: this._park[id].images[image_year].hp_y,
+                    image_hp_x: this._park[id].images[image_year].image_hp_x,
+                    image_hp_y: this._park[id].images[image_year].image_hp_y,
                     scale: this._park[id].images[image_year].scale,
                     file: this._park[id].images[image_year].file
                 };
@@ -167,8 +169,8 @@ var K = (function(my, $) {
         if (!factors)
             return;
         var scale = factors.scale;
-        var hp_x = factors.hp_x * that.canvas.width;
-        var hp_y = factors.hp_y * that.canvas.height;
+        var hp_x = factors.image_hp_x * that.canvas.width;
+        var hp_y = factors.image_hp_y * that.canvas.height;
         var radius = 2;
 
         if (that.canvas.height === 250) {
