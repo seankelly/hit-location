@@ -169,15 +169,21 @@ var K = (function(my, $) {
         var factors = that.get_park_factors(on_id, year);
         if (!factors)
             return;
-        var scale = factors.scale;
-        var hp_x = factors.image_hp_x * that.canvas.width;
-        var hp_y = factors.image_hp_y * that.canvas.height;
-        var min_dimension = Math.min(that.canvas.width, that.canvas.height);
+
+        var width = that.canvas.width;
+        var height = that.canvas.height;
+
+        var hp_x = factors.image_hp_x * width;
+        var hp_y = factors.image_hp_y * height;
+        var min_dimension = Math.min(width, height);
         var radius = Math.max(min_dimension / 250, 1);
 
-        if (that.canvas.height === 250) {
-            scale *= 2;
-        }
+        // slope = (y2-y1)/(x2-x1)
+        //       = (scale - 2*scale)/(500-250)
+        //       = -scale/250
+        var slope = -factor.scale / 250;
+        var scale_x = factors.scale + slope * (width - 250);
+        var scale_y = factors.scale + slope * (height - 250);
 
         var color = {
             'pop out': '#eb3b22',
@@ -197,7 +203,7 @@ var K = (function(my, $) {
 
             ctx.fillStyle = color[bip.event];
             ctx.beginPath();
-            ctx.arc(bip.x/scale + hp_x, hp_y - bip.y/scale, radius, 1, 2*Math.PI, false);
+            ctx.arc(bip.x/scale_x + hp_x, hp_y - bip.y/scale_y, radius, 1, 2*Math.PI, false);
             ctx.fill();
         }
     }
