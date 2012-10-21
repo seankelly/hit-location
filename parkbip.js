@@ -172,11 +172,11 @@ var K = (function(my, $) {
         var scale = factors.scale;
         var hp_x = factors.image_hp_x * that.canvas.width;
         var hp_y = factors.image_hp_y * that.canvas.height;
-        var radius = 2;
+        var min_dimension = Math.min(that.canvas.width, that.canvas.height);
+        var radius = Math.max(min_dimension / 250, 1);
 
         if (that.canvas.height === 250) {
             scale *= 2;
-            radius = 1;
         }
 
         var color = {
