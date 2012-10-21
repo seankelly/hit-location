@@ -176,14 +176,13 @@ var K = (function(my, $) {
         var hp_x = factors.image_hp_x * width;
         var hp_y = factors.image_hp_y * height;
         var min_dimension = Math.min(width, height);
+        // Force a minimum of a one pixel radius for the markers.
         var radius = Math.max(min_dimension / 250, 1);
 
-        // slope = (y2-y1)/(x2-x1)
-        //       = (scale - 2*scale)/(500-250)
-        //       = -scale/250
-        var slope = -factors.scale / 250;
-        var scale_x = factors.scale + slope * (width - 500);
-        var scale_y = factors.scale + slope * (height - 500);
+        // The scale is based off a 500 pixel image, so transform it based on
+        // the scale between the original and the current size.
+        var scale_x = factors.scale * (500 / width);
+        var scale_y = factors.scale * (500 / height);
 
         var color = {
             'pop out': '#eb3b22',
