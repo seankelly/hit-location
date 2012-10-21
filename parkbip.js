@@ -181,7 +181,7 @@ var K = (function(my, $) {
         // slope = (y2-y1)/(x2-x1)
         //       = (scale - 2*scale)/(500-250)
         //       = -scale/250
-        var slope = -factor.scale / 250;
+        var slope = -factors.scale / 250;
         var scale_x = factors.scale + slope * (width - 250);
         var scale_y = factors.scale + slope * (height - 250);
 
