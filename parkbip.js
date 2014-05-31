@@ -139,14 +139,13 @@ var K = (function(my, $) {
                 }
             }
             if (image_year > 0) {
-                var park = this._park[id].images[image_year];
                 return {
-                    hp_x: park.hp_x,
-                    hp_y: park.hp_y,
-                    image_hp_x: park.image_hp_x,
-                    image_hp_y: park.image_hp_y,
-                    scale: park.scale,
-                    file: park.file
+                    hp_x: this._park[id].images[image_year].hp_x,
+                    hp_y: this._park[id].images[image_year].hp_y,
+                    image_hp_x: this._park[id].images[image_year].image_hp_x,
+                    image_hp_y: this._park[id].images[image_year].image_hp_y,
+                    scale: this._park[id].images[image_year].scale,
+                    file: this._park[id].images[image_year].file
                 };
             }
         }
@@ -169,20 +168,15 @@ var K = (function(my, $) {
         var factors = that.get_park_factors(on_id, year);
         if (!factors)
             return;
+        var scale = factors.scale;
+        var hp_x = factors.image_hp_x * that.canvas.width;
+        var hp_y = factors.image_hp_y * that.canvas.height;
+        var radius = 2;
 
-        var width = that.canvas.width;
-        var height = that.canvas.height;
-
-        var hp_x = factors.image_hp_x * width;
-        var hp_y = factors.image_hp_y * height;
-        var min_dimension = Math.min(width, height);
-        // Force a minimum of a one pixel radius for the markers.
-        var radius = Math.max(min_dimension / 250, 1);
-
-        // The scale is based off a 500 pixel image, so transform it based on
-        // the scale between the original and the current size.
-        var scale_x = factors.scale * (500 / width);
-        var scale_y = factors.scale * (500 / height);
+        if (that.canvas.height === 250) {
+            scale *= 2;
+            radius = 1;
+        }
 
         var color = {
             'pop out': '#eb3b22',
@@ -202,7 +196,7 @@ var K = (function(my, $) {
 
             ctx.fillStyle = color[bip.event];
             ctx.beginPath();
-            ctx.arc(bip.x/scale_x + hp_x, hp_y - bip.y/scale_y, radius, 1, 2*Math.PI, false);
+            ctx.arc(bip.x/scale + hp_x, hp_y - bip.y/scale, radius, 1, 2*Math.PI, false);
             ctx.fill();
         }
     }
